@@ -13,20 +13,14 @@ class Ship extends EngineObject
         this.setCollision(); // make object collide
         this.mass = 0; // make object have static physics
         this.weapon = new Weapon(pos, this);
-        this.lastPos = pos
+        
     }
 
     update()
     {
-        let percent = 0.1;
-        if(mousePos.distance(this.lastPos) < 0) {
-          console.log(mousePos.distance(this.lastPos))
-          percent = -0.1
-          console.log(percent)
-        }
-        this.pos = this.lastPos.lerp(mousePos, percent).rotate(mousePos.angle()*0.01)
-      
-        this.lastPos = this.pos
+      this.moveInput = vec2((keyIsDown('ArrowRight') - keyIsDown('ArrowLeft'))/2, 
+      (keyIsDown('ArrowUp') - keyIsDown('ArrowDown'))/2);
+        this.pos = vec2(this.pos.x + this.moveInput.x, this.pos.y + this.moveInput.y)
         if (this.weapon) // update weapon trigger
             this.weapon.triggerIsDown = true;
         
