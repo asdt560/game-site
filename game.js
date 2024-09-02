@@ -1,7 +1,11 @@
 'use strict';
 
+
 const levelSize = vec2(38, 20); // size of play area
 let ship;
+let rockHeight;
+let rockCounter = 0;
+let score = 0;
 
 const sound_shoot = new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.01]);
 
@@ -131,10 +135,12 @@ class Bullet extends EngineObject
     
     collideWithObject(o)
     {
-        if (o.isGameObject && o != this.attacker)
+        console.log('collidewithobject', o)
+        if (o.isEnemy)
         {
+            console.log('isgameobject')
             o.damage(this.damage, this);
-            o.applyForce(this.velocity.scale(.1));
+            //o.applyForce(this.velocity.scale(.1));
         }
     
         this.kill();
@@ -143,6 +149,7 @@ class Bullet extends EngineObject
 
     collideWithTile(data, pos)
     {
+      console.log('collidewithtile')
         if (data <= 0)
             return 0;
             
@@ -158,6 +165,34 @@ class Bullet extends EngineObject
         this.destroy();
 
     }
+}
+
+class Rock extends EngineObject {
+  constructor(pos) {
+    super(pos, vec2(0.75, 0.75)); // set object position and size
+    this.speed = 0.1;
+    this.setCollision()
+    this.health = 1
+    this.isEnemy = true;
+  }
+
+  update() {
+    this.pos = vec2(this.pos.x - this.speed, this.pos.y)
+  }
+
+  damage(number, source) {
+    console.log("hit!")
+    this.health -= number
+    if(this.health <= 0) {
+      this.kill()
+    }
+    return 1;
+  }
+
+  kill() {
+    score++;
+    this.destroy();
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -177,12 +212,17 @@ function gameInit()
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate()
 {
-  
+  if(rockCounter === 0 || rockCounter % 60 === 0) {
+    rockHeight = Math.floor(Math.random() * (levelSize.x - 10) + 10)
+    new Rock(vec2(levelSize.x - 10, rockHeight))
+  }
+  rockCounter++
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdatePost()
 {
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -195,6 +235,7 @@ function gameRender()
 ///////////////////////////////////////////////////////////////////////////////
 function gameRenderPost()
 {
+  drawTextScreen("Score: " + score, vec2(mainCanvasSize.x/2, 70), 50); // show score
 }
 
 ///////////////////////////////////////////////////////////////////////////////
