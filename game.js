@@ -7,7 +7,7 @@ let rockHeight;
 let rockCounter = 0;
 let score = 0;
 
-const sound_shoot = new Sound([,,90,,.01,.03,4,,,,,,,9,50,.2,,.2,.01]);
+const sound_shoot = new Sound([1.8,,205,.02,.03,,1,2.2,18,-13,,,,,,.4,.09,.91,.14])
 
 class Ship extends EngineObject
 {
@@ -50,7 +50,7 @@ class Weapon extends EngineObject
         super(pos, vec2(.6));
 
         // weapon settings
-        this.fireRate      = 8;
+        this.fireRate      = 4;
         this.bulletSpeed   = .5;
         this.bulletSpread  = .1;
         this.damage        = 1;
@@ -68,6 +68,8 @@ class Weapon extends EngineObject
     {
         super.update();
 
+        
+
         // update recoil
         if (this.recoilTimer.active())
             this.localAngle = lerp(this.recoilTimer.getPercent(), this.localAngle, 0);
@@ -79,13 +81,14 @@ class Weapon extends EngineObject
             // try to fire
             for (; this.fireTimeBuffer > 0; this.fireTimeBuffer -= 1/this.fireRate)
             {
+                sound_shoot.stop()
                 // create bullet
                 this.localAngle = -rand(.2,.25);
                 this.recoilTimer.set(.1);
                 const direction = vec2(this.bulletSpeed*this.getMirrorSign(), 0);
                 const velocity = direction.rotate(rand(-1,1)*this.bulletSpread);
                 new Bullet(this.pos, this.parent, velocity, this.damage);
-
+                sound_shoot.play()
                 // spawn shell particle
             }
         }
