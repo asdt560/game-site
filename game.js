@@ -1,11 +1,13 @@
 'use strict';
 
 
-const levelSize = vec2(38, 20); // size of play area
+
+const levelSize = vec2(38, 19); // size of play area
 let ship;
 let rockHeight;
 let rockCounter = 0;
 let score = 0;
+let rocks = []
 
 const sound_shoot = new Sound([1.8,,205,.02,.03,,1,2.2,18,-13,,,,,,.4,.09,.91,.14])
 
@@ -207,17 +209,16 @@ function gameInit()
 
   ship = new Ship(vec2(0, 0))
 
-  new Wall(vec2(-.5,levelSize.y/2),            vec2(1,100)) // top
-  new Wall(vec2(levelSize.x+.5,levelSize.y/2), vec2(1,100)) // left
-  new Wall(vec2(levelSize.x/2,levelSize.y+.5), vec2(100,1)) // right
+  new Wall(vec2(-.5,levelSize.y/2),vec2(1,100)) // top
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate()
 {
+  
   if(rockCounter === 0 || rockCounter % 60 === 0) {
-    rockHeight = Math.floor(Math.random() * (levelSize.x - 10) + 10)
-    new Rock(vec2(levelSize.x - 10, rockHeight))
+    rockHeight = Math.floor(Math.random() * (levelSize.x-20)+20)
+    new Rock(vec2(levelSize.x, rockHeight))
   }
   rockCounter++
 }
@@ -238,7 +239,7 @@ function gameRender()
 ///////////////////////////////////////////////////////////////////////////////
 function gameRenderPost()
 {
-  drawTextScreen("Score: " + score, vec2(mainCanvasSize.x/2, 70), 50); // show score
+  drawTextScreen("Score: " + score, vec2(mainCanvasSize.x/2, 30), 50); // show score
 }
 
 ///////////////////////////////////////////////////////////////////////////////
